@@ -9,10 +9,10 @@
 	/// Summary description for UnitTest1
 	/// </summary>
 	[TestClass]
-	public class UnitTest1
+	public class ErrorUnionShould
 	{
 		[TestMethod]
-		public void ReturnsAUnionOfStringErrorTypeWithAnErrorObject()
+		public void ReturnAUnionOfStringErrorTypeWithAnErrorObject()
 		{
 			var test = Union.ToErrorUnion<string, DivideByZeroException>(TestError);
 
@@ -24,7 +24,7 @@
 		}
 
 		[TestMethod]
-		public void ReturnsAUnionOfStringErrorTypeWithAString()
+		public void ReturnAUnionOfStringErrorTypeWithAString()
 		{
 			var test = Union.ToErrorUnion<string, DivideByZeroException>(Teststring);
 

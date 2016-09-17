@@ -95,7 +95,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2> : Union<T1>, IUnion<T2>
+	public class Union<T1, T2> : Union<T1>, IUnion<T2>, IUnion
 	{
 		private readonly T2 b;
 
@@ -123,7 +123,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3> : Union<T1, T2>, IUnion<T3>
+	public class Union<T1, T2, T3> : Union<T1, T2>, IUnion<T3>, IUnion
 	{
 		private readonly T3 c;
 
@@ -155,7 +155,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3, T4> : Union<T1, T2, T3>, IUnion<T4>
+	public class Union<T1, T2, T3, T4> : Union<T1, T2, T3>, IUnion<T4>, IUnion
 	{
 		private readonly T4 d;
 
@@ -191,7 +191,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3, T4, T5> : Union<T1, T2, T3, T4>, IUnion<T5>
+	public class Union<T1, T2, T3, T4, T5> : Union<T1, T2, T3, T4>, IUnion<T5>, IUnion
 	{
 		private readonly T5 e;
 
@@ -231,7 +231,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3, T4, T5, T6> : Union<T1, T2, T3, T4, T5>, IUnion<T6>
+	public class Union<T1, T2, T3, T4, T5, T6> : Union<T1, T2, T3, T4, T5>, IUnion<T6>, IUnion
 	{
 		private readonly T6 f;
 
@@ -275,7 +275,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3, T4, T5, T6, T7> : Union<T1, T2, T3, T4, T5, T6>, IUnion<T7>
+	public class Union<T1, T2, T3, T4, T5, T6, T7> : Union<T1, T2, T3, T4, T5, T6>, IUnion<T7>, IUnion
 	{
 		private readonly T7 g;
 
@@ -323,7 +323,7 @@ namespace Functional
 		}
 	}
 
-	public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : Union<T1, T2, T3, T4, T5, T6, T7>, IUnion<T8>
+	public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : Union<T1, T2, T3, T4, T5, T6, T7>, IUnion<T8>, IUnion
 	{
 		private readonly T8 h;
 
