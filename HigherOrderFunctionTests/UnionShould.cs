@@ -1,7 +1,6 @@
 ﻿using Functional;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Functional;
 using static Functional.HigherOrderFunctions;
 
 namespace HigherOrderFunctionTests

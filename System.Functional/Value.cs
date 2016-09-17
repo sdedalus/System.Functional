@@ -1,7 +1,7 @@
 ﻿namespace Functional
 {
-	public abstract class ValueObject<T>
-	   where T : ValueObject<T>
+	public abstract class Value<T>
+	   where T : Value<T>
 	{
 		public override bool Equals(object obj)
 		{
@@ -22,7 +22,7 @@
 
 		protected abstract int GetHashCodeCore();
 
-		public static bool operator ==(ValueObject<T> a, ValueObject<T> b)
+		public static bool operator ==(Value<T> a, Value<T> b)
 		{
 			if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
 				return true;
@@ -33,7 +33,7 @@
 			return a.Equals(b);
 		}
 
-		public static bool operator !=(ValueObject<T> a, ValueObject<T> b)
+		public static bool operator !=(Value<T> a, Value<T> b)
 		{
 			return !(a == b);
 		}

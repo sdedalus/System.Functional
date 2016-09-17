@@ -99,7 +99,7 @@
 		/// <typeparam name="T"></typeparam>
 		/// <param name="option">The option.</param>
 		/// <returns></returns>
-		public static T Value<T>(this Option<T> option) where T : class => option();
+		public static T Value<T>(this Option<T> option) where T : class => GetOptionValue(option);
 
 		/// <summary>
 		/// Values the specified option.
@@ -117,17 +117,7 @@
 		/// <returns>
 		///   <c>true</c> if the specified option is some; otherwise, <c>false</c>.
 		/// </returns>
-		public static bool IsSome<T>(this Option<T> option) where T : class => option(false) != null;
-
-		/// <summary>
-		/// Determines whether this instance is some.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="option">The option.</param>
-		/// <returns>
-		///   <c>true</c> if the specified option is some; otherwise, <c>false</c>.
-		/// </returns>
-		public static bool IsSome<T>(this Option<T?> option) where T : struct => option(false).HasValue;
+		public static bool IsSome<T>(this Option<T> option) => SolveSome(option);
 
 		/// <summary>
 		/// Determines whether this instance is none.
@@ -137,17 +127,7 @@
 		/// <returns>
 		///   <c>true</c> if the specified option is none; otherwise, <c>false</c>.
 		/// </returns>
-		public static bool IsNone<T>(this Option<T> option) where T : class => option(false) == null;
-
-		/// <summary>
-		/// Determines whether this instance is none.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="option">The option.</param>
-		/// <returns>
-		///   <c>true</c> if the specified option is none; otherwise, <c>false</c>.
-		/// </returns>
-		public static bool IsNone<T>(this Option<T?> option) where T : struct => !option(false).HasValue;
+		public static bool IsNone<T>(this Option<T> option) => !SolveSome(option);
 
 		public static void IfNotNull<T>(this T value, Action act)
 			where T : class
@@ -156,6 +136,29 @@
 			{
 				act();
 			}
+		}
+
+		private static T GetOptionValue<T>(Option<T> option)
+		{
+			var value = option();
+			if (default(T) == null)
+			{
+				return value;
+			}
+
+			return value;
+		}
+
+		private static bool SolveSome<T>(Option<T> option)
+		{
+			if (default(T) == null)
+			{
+				var value = option(false);
+				var tmp = value != null;
+				return tmp;
+			}
+
+			return true;
 		}
 	}
 }

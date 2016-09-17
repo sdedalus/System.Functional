@@ -1,6 +1,7 @@
-﻿using static Functional.HigherOrderFunctions;
+﻿using System;
+using static Functional.HigherOrderFunctions;
 
-namespace System.Functional
+namespace Functional
 {
 	public static class Union
 	{
@@ -25,6 +26,31 @@ namespace System.Functional
 
 			var nullableValue = nullableUnion.value;
 			return nullableValue.AsOption();
+		}
+
+		public static IUnion ToErrorUnion<T, Err>(this Func<T> factory)
+			where Err : SystemException
+		{
+			try
+			{
+				return new Union<T, Err>(factory());
+			}
+			catch (Err ex)
+			{
+				return new Union<T, Err>(ex);
+			}
+		}
+
+		public static IUnion ToErrorUnion<T>(this Func<T> factory)
+		{
+			try
+			{
+				return new Union<T, SystemException>(factory());
+			}
+			catch (SystemException ex)
+			{
+				return new Union<T, SystemException>(ex);
+			}
 		}
 	}
 
@@ -71,7 +97,6 @@ namespace System.Functional
 
 	public class Union<T1, T2> : Union<T1>, IUnion<T2>
 	{
-		private readonly T1 a;
 		private readonly T2 b;
 
 		protected Union()
@@ -145,6 +170,10 @@ namespace System.Functional
 		{
 		}
 
+		public Union(T3 c) : base(c)
+		{
+		}
+
 		public Union(T4 d)
 		{
 			OptionGuard(d);
@@ -169,6 +198,22 @@ namespace System.Functional
 		protected Union()
 		{ }
 
+		public Union(T1 a) : base(a)
+		{
+		}
+
+		public Union(T2 b) : base(b)
+		{
+		}
+
+		public Union(T3 c) : base(c)
+		{
+		}
+
+		public Union(T4 d) : base(d)
+		{
+		}
+
 		public Union(T5 e)
 		{
 			OptionGuard(e);
@@ -182,6 +227,146 @@ namespace System.Functional
 			get
 			{
 				return Item5;
+			}
+		}
+	}
+
+	public class Union<T1, T2, T3, T4, T5, T6> : Union<T1, T2, T3, T4, T5>, IUnion<T6>
+	{
+		private readonly T6 f;
+
+		protected Union()
+		{ }
+
+		public Union(T1 a) : base(a)
+		{
+		}
+
+		public Union(T2 b) : base(b)
+		{
+		}
+
+		public Union(T3 c) : base(c)
+		{
+		}
+
+		public Union(T4 d) : base(d)
+		{
+		}
+
+		public Union(T5 e) : base(e)
+		{
+		}
+
+		public Union(T6 f)
+		{
+			OptionGuard(f);
+			this.f = f;
+		}
+
+		private T6 Item6 => f;
+
+		public T6 value
+		{
+			get
+			{
+				return Item6;
+			}
+		}
+	}
+
+	public class Union<T1, T2, T3, T4, T5, T6, T7> : Union<T1, T2, T3, T4, T5, T6>, IUnion<T7>
+	{
+		private readonly T7 g;
+
+		protected Union()
+		{ }
+
+		public Union(T1 a) : base(a)
+		{
+		}
+
+		public Union(T2 b) : base(b)
+		{
+		}
+
+		public Union(T3 c) : base(c)
+		{
+		}
+
+		public Union(T4 d) : base(d)
+		{
+		}
+
+		public Union(T5 e) : base(e)
+		{
+		}
+
+		public Union(T6 f) : base(f)
+		{
+		}
+
+		public Union(T7 g)
+		{
+			OptionGuard(g);
+			this.g = g;
+		}
+
+		private T7 Item7 => g;
+
+		public T7 value
+		{
+			get
+			{
+				return Item7;
+			}
+		}
+	}
+
+	public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : Union<T1, T2, T3, T4, T5, T6, T7>, IUnion<T8>
+	{
+		private readonly T8 h;
+
+		protected Union()
+		{ }
+
+		public Union(T2 b) : base(b)
+		{
+		}
+
+		public Union(T3 c) : base(c)
+		{
+		}
+
+		public Union(T4 d) : base(d)
+		{
+		}
+
+		public Union(T5 e) : base(e)
+		{
+		}
+
+		public Union(T6 f) : base(f)
+		{
+		}
+
+		public Union(T7 g) : base(g)
+		{
+		}
+
+		public Union(T8 h)
+		{
+			OptionGuard(h);
+			this.h = h;
+		}
+
+		private T8 Item8 => h;
+
+		public T8 value
+		{
+			get
+			{
+				return Item8;
 			}
 		}
 	}
