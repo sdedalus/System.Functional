@@ -16,6 +16,13 @@
 			this TSource @this,
 			Func<TSource, TResult> fn) => fn(@this);
 
+		/// <summary>
+		/// Tees the specified act.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="this">The this.</param>
+		/// <param name="act">The act.</param>
+		/// <returns></returns>
 		public static T Tee<T>(this T @this, Action<T> act)
 		{
 			act?.Invoke(@this);
