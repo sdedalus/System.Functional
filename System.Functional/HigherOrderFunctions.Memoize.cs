@@ -25,59 +25,53 @@
 			};
 		}
 
+		// This is not the best approach since it relies on an intermediate tuple argument but will
+		// serve until i can solve the problem of lost scope that happens when SafeMemoize is called
+		// in a chain following Curry.
 		public static Func<T1, R> Memoize<T1, R>(Func<T1, R> function) =>
 			(a) => function
 			.SafeMemoize()(a);
 
 		public static Func<T1, T2, R> Memoize<T1, T2, R>(Func<T1, T2, R> function) =>
-			(a, b) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b);
+			 function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 
 		public static Func<T1, T2, T3, R> Memoize<T1, T2, T3, R>(Func<T1, T2, T3, R> function) =>
-			(a, b, c) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b)
-			.SafeMemoize()(c);
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 
 		public static Func<T1, T2, T3, T4, R> Memoize<T1, T2, T3, T4, R>(Func<T1, T2, T3, T4, R> function) =>
-			(a, b, c, d) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b)
-			.SafeMemoize()(c)
-			.SafeMemoize()(d);
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 
 		public static Func<T1, T2, T3, T4, T5, R> Memoize<T1, T2, T3, T4, T5, R>(Func<T1, T2, T3, T4, T5, R> function) =>
-			(a, b, c, d, e) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b)
-			.SafeMemoize()(c)
-			.SafeMemoize()(d)
-			.SafeMemoize()(e);
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 
 		public static Func<T1, T2, T3, T4, T5, T6, R> Memoize<T1, T2, T3, T4, T5, T6, R>(Func<T1, T2, T3, T4, T5, T6, R> function) =>
-			(a, b, c, d, e, f) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b)
-			.SafeMemoize()(c)
-			.SafeMemoize()(d)
-			.SafeMemoize()(e)
-			.SafeMemoize()(f);
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 
 		public static Func<T1, T2, T3, T4, T5, T6, T7, R> Memoize<T1, T2, T3, T4, T5, T6, T7, R>(Func<T1, T2, T3, T4, T5, T6, T7, R> function) =>
-			(a, b, c, d, e, f, g) => function
-			.Curry()
-			.SafeMemoize()(a)
-			.SafeMemoize()(b)
-			.SafeMemoize()(c)
-			.SafeMemoize()(d)
-			.SafeMemoize()(e)
-			.SafeMemoize()(f)
-			.SafeMemoize()(g);
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
+
+		public static Func<T1, T2, T3, T4, T5, T6, T7, T8, R> Memoize<T1, T2, T3, T4, T5, T6, T7, T8, R>(Func<T1, T2, T3, T4, T5, T6, T7, T8, R> function) =>
+			function
+			.Tupalize()
+			.SafeMemoize()
+			.Detupalize();
 	}
 }
