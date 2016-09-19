@@ -9,7 +9,22 @@ namespace HigherOrderFunctionTests
 	public class UnionShould
 	{
 		[TestMethod]
-		public void TestMethod1()
+		public void ForUnionStringIntWhereStringIsSetAndConditionsAreUsed()
+		{
+			var x = new Union<string, int?>("test");
+
+			Assert.IsFalse(x.Match<string>(c => c != "test").IsSome());
+			Assert.IsTrue(x.Match<string>(c => c != "test").IsNone());
+
+			Assert.IsTrue(x.Match<string>(c => c == "test").IsSome());
+			Assert.IsFalse(x.Match<string>(c => c == "test").IsNone());
+
+			Assert.IsTrue(x.Match<int>().IsNone());
+			Assert.IsFalse(x.Match<int>().IsSome());
+		}
+
+		[TestMethod]
+		public void ForUnionStringIntWhereStringIsSet()
 		{
 			var x = new Union<string, int?>("");
 
@@ -21,7 +36,7 @@ namespace HigherOrderFunctionTests
 		}
 
 		[TestMethod]
-		public void TestMethod2()
+		public void ForUnionStringIntWhereIntIsSet()
 		{
 			var x = new Union<string, int?>(1);
 
@@ -30,6 +45,21 @@ namespace HigherOrderFunctionTests
 
 			Assert.IsTrue(x.Match<string>().IsNone());
 			Assert.IsFalse(x.Match<string>().IsSome());
+		}
+
+		[TestMethod]
+		public void ForUnionStringIntWhereIntIsSetAndConditionsAreUsed()
+		{
+			var x = new Union<string, int?>(1);
+
+			Assert.IsTrue(x.Match<int>(c => c == 1).IsSome());
+			Assert.IsFalse(x.Match<int>(c => c == 1).IsNone());
+
+			Assert.IsTrue(x.Match<string>().IsNone());
+			Assert.IsFalse(x.Match<string>().IsSome());
+
+			Assert.IsFalse(x.Match<int>(c => c == 10).IsSome());
+			Assert.IsTrue(x.Match<int>(c => c == 10).IsNone());
 		}
 
 		[TestMethod]
@@ -59,11 +89,13 @@ namespace HigherOrderFunctionTests
 			// Example Use allows pattern matching
 			var input = new Union<string, int?>("100");
 			int output = 0;
+
 			if (input.Match<int>().IsSome())
 			{
 				output = input.Match<int>().Value();
 			}
-			else if (input.Match<string>().IsSome())
+
+			if (input.Match<string>().IsSome())
 			{
 				if (!int.TryParse(input.Match<string>().Value(), out output))
 				{

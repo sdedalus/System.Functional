@@ -60,9 +60,9 @@
     <Compile Include="ErrorUnionShould.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Functional\System.Functional.csproj">
+    <ProjectReference Include="..\System.Functional\Functional.csproj">
       <Project>{9273c61b-ac51-4394-aacd-40a7eac8a750}</Project>
-      <Name>System.Functional</Name>
+      <Name>Functional</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

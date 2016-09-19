@@ -5,6 +5,13 @@ namespace Functional
 {
 	public static class Union
 	{
+		/// <summary>
+		/// Matches the specified type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="union">The union.</param>
+		/// <param name="ignored">The ignored.</param>
+		/// <returns></returns>
 		public static Option<T> Match<T>(this IUnion union, ClassConstraint<T> ignored = default(ClassConstraint<T>)) where T : class
 		{
 			var myUnion = union as IUnion<T>;
@@ -12,6 +19,32 @@ namespace Functional
 			return value.AsOption();
 		}
 
+		public static Option<T> Match<T>(this IUnion union, Func<T, bool> condition, ClassConstraint<T> ignored = default(ClassConstraint<T>)) where T : class
+		{
+			var myUnion = union as IUnion<T>;
+			var value = myUnion.value;
+			var opt = value.AsOption();
+			if (opt.IsSome())
+			{
+				if (condition(opt.Value()))
+				{
+					return opt;
+				}
+
+				T def = default(T);
+				return def.AsOption();
+			}
+
+			return opt;
+		}
+
+		/// <summary>
+		/// Matches the specified type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="union">The union.</param>
+		/// <param name="ignored">The ignored.</param>
+		/// <returns></returns>
 		public static Option<T?> Match<T>(this IUnion union, T? ignored = default(T?))
 			where T : struct
 		{
@@ -28,6 +61,54 @@ namespace Functional
 			return nullableValue.AsOption();
 		}
 
+		public static Option<T?> Match<T>(this IUnion union, Func<T, bool> condition, T? ignored = default(T?))
+			where T : struct
+		{
+			var myUnion = union as IUnion<T>;
+			Option<T?> opt;
+			if (myUnion != null)
+			{
+				var value = myUnion.value;
+				opt = value.AsOption();
+
+				if (opt.IsSome())
+				{
+					if (condition(opt.Value()))
+					{
+						return opt;
+					}
+
+					T? def = null;
+					return def.AsOption();
+				}
+			}
+
+			var nullableUnion = union as IUnion<T?>;
+
+			var nullableValue = nullableUnion.value;
+			opt = nullableValue.AsOption();
+
+			if (opt.IsSome())
+			{
+				if (condition(opt.Value()))
+				{
+					return opt;
+				}
+
+				T? def = null;
+				return def.AsOption();
+			}
+
+			return opt;
+		}
+
+		/// <summary>
+		/// To the error union.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="Err">The type of the rr.</typeparam>
+		/// <param name="factory">The factory.</param>
+		/// <returns></returns>
 		public static IUnion ToErrorUnion<T, Err>(this Func<T> factory)
 			where Err : SystemException
 		{
@@ -41,6 +122,12 @@ namespace Functional
 			}
 		}
 
+		/// <summary>
+		/// To the error union.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="factory">The factory.</param>
+		/// <returns></returns>
 		public static IUnion ToErrorUnion<T>(this Func<T> factory)
 		{
 			try

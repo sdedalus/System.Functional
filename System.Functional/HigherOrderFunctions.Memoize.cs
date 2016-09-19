@@ -26,7 +26,7 @@
 		}
 
 		// This is not the best approach since it relies on an intermediate tuple argument but will
-		// serve until i can solve the problem of lost scope that happens when SafeMemoize is called
+		// serve until I can solve the problem of lost scope that happens when SafeMemoize is called
 		// in a chain following Curry.
 		public static Func<T1, R> Memoize<T1, R>(Func<T1, R> function) =>
 			(a) => function
@@ -34,44 +34,44 @@
 
 		public static Func<T1, T2, R> Memoize<T1, T2, R>(Func<T1, T2, R> function) =>
 			 function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, R> Memoize<T1, T2, T3, R>(Func<T1, T2, T3, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, T4, R> Memoize<T1, T2, T3, T4, R>(Func<T1, T2, T3, T4, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, T4, T5, R> Memoize<T1, T2, T3, T4, T5, R>(Func<T1, T2, T3, T4, T5, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, T4, T5, T6, R> Memoize<T1, T2, T3, T4, T5, T6, R>(Func<T1, T2, T3, T4, T5, T6, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, T4, T5, T6, T7, R> Memoize<T1, T2, T3, T4, T5, T6, T7, R>(Func<T1, T2, T3, T4, T5, T6, T7, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 
 		public static Func<T1, T2, T3, T4, T5, T6, T7, T8, R> Memoize<T1, T2, T3, T4, T5, T6, T7, T8, R>(Func<T1, T2, T3, T4, T5, T6, T7, T8, R> function) =>
 			function
-			.Tupleize()
+			.Tupled()
 			.SafeMemoize()
-			.DeTupleize();
+			.Detupled();
 	}
 }
