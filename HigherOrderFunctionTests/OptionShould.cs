@@ -1,7 +1,9 @@
 ﻿using Functional;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using static Functional.HigherOrderFunctions;
+using System.Collections.Generic;
+using System.Linq;
+using static Functional.Option;
 
 namespace HigherOrderFunctionTests
 {
@@ -9,68 +11,92 @@ namespace HigherOrderFunctionTests
 	public class OptionShould
 	{
 		[TestMethod]
+		public void Testone()
+		{
+			var someValue = "Test".ToMaybe();
+			Assert.IsInstanceOfType(someValue, typeof(Some<string>));
+
+			string x = someValue;
+
+			Assert.AreEqual("Test", x);
+		}
+
+		[TestMethod]
+		public void TestTwo()
+		{
+			var opt = "Test".ToMaybe();
+			Assert.IsTrue(opt.IsSome());
+		}
+
+		[TestMethod]
 		public void CreateAOptOfStringWhenGivenAString()
 		{
-			var x = "test".AsOption();
+			var x = "test".ToMaybe();
 
 			Assert.IsInstanceOfType(x, typeof(Option<string>));
 
 			Assert.IsTrue(x.IsSome());
 
-			Assert.AreSame("test", x.Value());
-
-			Assert.AreSame("test", x());
+			Assert.AreSame("test", (string)x);
 		}
 
 		[TestMethod]
 		public void ThrowsANullReferenceExceptionWhenTheRetreivedValueIsNull()
 		{
-			var x = ((string)null).AsOption();
+			var x = new None<string>();
 
-			Assert.IsInstanceOfType(x, typeof(Option<string>));
+			//var y = new List<string>();
+			string a;
 
-			Assert.IsFalse(x.IsSome());
+			Throws(() => a = from z in x select z.ToMaybe(), typeof(InvalidCastException));
 
-			Throws(() => x.Value(), typeof(NullReferenceException));
+			Throws(() => a = x.Select(v => v.ToMaybe()), typeof(InvalidCastException));
 
-			Throws(() => x(), typeof(NullReferenceException));
-		}
-
-		[TestMethod]
-		public void CreateASomeOptOfIntWhenGivenAInt()
-		{
-			var x = 1.AsOption();
-
-			Assert.IsInstanceOfType(x, typeof(Option<int?>));
-
-			Assert.IsTrue(x.IsSome());
-
-			Assert.AreEqual(1, x.Value());
-
-			Assert.AreEqual(1, x().Value);
-		}
-
-		[TestMethod]
-		public void ThrowsANullReferenceExceptionWhenTheRetreivedIntValueIsNone()
-		{
-			var x = (null as int?).AsOption();
-
-			Assert.IsInstanceOfType(x, typeof(Option<int?>));
+			//var temp = from v in x where IsSome select v;
+			//Assert.IsInstanceOfType(x, typeof(Option<string>));
 
 			Assert.IsFalse(x.IsSome());
 
-			Throws(() => x.Value(), typeof(NullReferenceException));
+			//Throws(() => x.Value, typeof(NullReferenceException));
 
-			Throws(() => x(), typeof(NullReferenceException));
+			//Throws(() => x(), typeof(NullReferenceException));
 		}
 
-		[TestMethod]
-		public void ThrowsAInvalidOperationExceptionWhenYouCreateAnOptionOfOption()
-		{
-			var x = 1.AsOption();
+		//[TestMethod]
+		//public void CreateASomeOptOfIntWhenGivenAInt()
+		//{
+		//	var x = 1.AsOption();
 
-			Throws(() => x.AsOption(), typeof(InvalidOperationException));
-		}
+		//	Assert.IsInstanceOfType(x, typeof(Option<int?>));
+
+		//	Assert.IsTrue(x.IsSome());
+
+		//	Assert.AreEqual(1, x.Value());
+
+		//	Assert.AreEqual(1, x().Value);
+		//}
+
+		//[TestMethod]
+		//public void ThrowsANullReferenceExceptionWhenTheRetreivedIntValueIsNone()
+		//{
+		//	var x = (null as int?).AsOption();
+
+		//	Assert.IsInstanceOfType(x, typeof(Option<int?>));
+
+		//	Assert.IsFalse(x.IsSome());
+
+		//	Throws(() => x.Value(), typeof(NullReferenceException));
+
+		//	Throws(() => x(), typeof(NullReferenceException));
+		//}
+
+		//[TestMethod]
+		//public void ThrowsAInvalidOperationExceptionWhenYouCreateAnOptionOfOption()
+		//{
+		//	var x = 1.AsOption();
+
+		//	Throws(() => x.AsOption(), typeof(InvalidOperationException));
+		//}
 
 		private static void Throws(Action act, Type exceptionType)
 		{

@@ -13,14 +13,10 @@ namespace HigherOrderFunctionTests
 		{
 			var x = new Union<string, int?>("test");
 
-			Assert.IsFalse(x.Match<string>(c => c != "test").IsSome());
-			Assert.IsTrue(x.Match<string>(c => c != "test").IsNone());
+			Assert.IsFalse(x.Match<string>(c => c != "test"));
+			Assert.IsTrue(x.Match<string>(c => c == "test"));
 
-			Assert.IsTrue(x.Match<string>(c => c == "test").IsSome());
-			Assert.IsFalse(x.Match<string>(c => c == "test").IsNone());
-
-			Assert.IsTrue(x.Match<int>().IsNone());
-			Assert.IsFalse(x.Match<int>().IsSome());
+			Assert.IsFalse(x.Match<int?>());
 		}
 
 		[TestMethod]
@@ -28,11 +24,8 @@ namespace HigherOrderFunctionTests
 		{
 			var x = new Union<string, int?>("");
 
-			Assert.IsTrue(x.Match<string>().IsSome());
-			Assert.IsFalse(x.Match<string>().IsNone());
-
-			Assert.IsTrue(x.Match<int>().IsNone());
-			Assert.IsFalse(x.Match<int>().IsSome());
+			Assert.IsTrue(x.Match<string>());
+			Assert.IsFalse(x.Match<int?>());
 		}
 
 		[TestMethod]
@@ -40,11 +33,8 @@ namespace HigherOrderFunctionTests
 		{
 			var x = new Union<string, int?>(1);
 
-			Assert.IsTrue(x.Match<int>().IsSome());
-			Assert.IsFalse(x.Match<int>().IsNone());
-
-			Assert.IsTrue(x.Match<string>().IsNone());
-			Assert.IsFalse(x.Match<string>().IsSome());
+			Assert.IsTrue(x.Match<int?>());
+			Assert.IsFalse(x.Match<string>());
 		}
 
 		[TestMethod]
@@ -52,29 +42,26 @@ namespace HigherOrderFunctionTests
 		{
 			var x = new Union<string, int?>(1);
 
-			Assert.IsTrue(x.Match<int>(c => c == 1).IsSome());
-			Assert.IsFalse(x.Match<int>(c => c == 1).IsNone());
+			Assert.IsTrue(x.Match<int?>(c => c == 1));
 
-			Assert.IsTrue(x.Match<string>().IsNone());
-			Assert.IsFalse(x.Match<string>().IsSome());
+			Assert.IsFalse(x.Match<string>());
 
-			Assert.IsFalse(x.Match<int>(c => c == 10).IsSome());
-			Assert.IsTrue(x.Match<int>(c => c == 10).IsNone());
+			Assert.IsFalse(x.Match<int>(c => c == 10));
 		}
 
 		[TestMethod]
 		public void PatternMatchingWithIntShouldHaveIntValue()
 		{
 			// Example Use allows pattern matching
-			var input = new Union<string, int?>(100);
+			var input = new Union<string, int>(100);
 			int output = 0;
-			if (input.Match<int>().IsSome())
+			if (input.Match<int>())
 			{
-				output = input.Match<int>().Value();
+				output = input.Value<int>();
 			}
-			else if (input.Match<string>().IsSome())
+			else if (input.Match<string>())
 			{
-				if (!int.TryParse(input.Match<string>().Value(), out output))
+				if (!int.TryParse(input.Value<string>(), out output))
 				{
 					output = 0;
 				}
@@ -90,14 +77,14 @@ namespace HigherOrderFunctionTests
 			var input = new Union<string, int?>("100");
 			int output = 0;
 
-			if (input.Match<int>().IsSome())
+			if (input.Match<int?>())
 			{
-				output = input.Match<int>().Value();
+				output = input.Value<int?>().Value;
 			}
 
-			if (input.Match<string>().IsSome())
+			if (input.Match<string>())
 			{
-				if (!int.TryParse(input.Match<string>().Value(), out output))
+				if (!int.TryParse(input.Value<string>(), out output))
 				{
 					output = 0;
 				}

@@ -43,7 +43,7 @@
     <Compile Include="HigherOrderFunctions.cs" />
     <Compile Include="HigherOrderFunctions.Curry.cs" />
     <Compile Include="HigherOrderFunctions.Memoize.cs" />
-    <Compile Include="HigherOrderFunctions.Option.cs" />
+    <Compile Include="Option.cs" />
     <Compile Include="HigherOrderFunctions.UnCurry.cs" />
     <Compile Include="HigherOrderFunctions.Tupled.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

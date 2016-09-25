@@ -14,15 +14,15 @@
 		/// <param name="y">The y.</param>
 		/// <param name="function">The function.</param>
 		/// <returns></returns>
-		public static IEnumerable<Y> Stream<Y>(Y y, Func<Y, Option<Y>> function)
-		{
-			var loop = true;
+		//public static IEnumerable<Y> Stream<Y>(Y y, Func<Y, Option<Y>> function)
+		//{
+		//	var loop = true;
 
-			while (loop)
-			{
-				yield return (function(y).Tee((t) => loop = t.IsSome())());
-			}
-		}
+		//	while (loop)
+		//	{
+		//		yield return (function(y).Tee((t) => loop = t.IsSome())());
+		//	}
+		//}
 
 		/// <summary>
 		/// Streams the specified y.

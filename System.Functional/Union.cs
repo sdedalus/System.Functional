@@ -5,101 +5,60 @@ namespace Functional
 {
 	public static class Union
 	{
+		////public static IUnion<B> Bind<A, B>(this IUnion<A> a, Func<A, IUnion<B>> func)
+		////{
+		////	return func(a.Value);
+		////}
+
+		////public static IUnion<B> Select<A, B>(this IUnion<A> a, Func<A, IUnion<B>> select)
+		////{
+		////	return a.Bind(aval => select(aval));
+		////}
+
 		/// <summary>
-		/// Matches the specified type.
+		/// Matches the specified union.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="union">The union.</param>
-		/// <param name="ignored">The ignored.</param>
 		/// <returns></returns>
-		public static Option<T> Match<T>(this IUnion union, ClassConstraint<T> ignored = default(ClassConstraint<T>)) where T : class
+		public static bool Match<T>(this IUnion union)
 		{
 			var myUnion = union as IUnion<T>;
-			var value = myUnion.value;
-			return value.AsOption();
-		}
-
-		public static Option<T> Match<T>(this IUnion union, Func<T, bool> condition, ClassConstraint<T> ignored = default(ClassConstraint<T>)) where T : class
-		{
-			var myUnion = union as IUnion<T>;
-			var value = myUnion.value;
-			var opt = value.AsOption();
-			if (opt.IsSome())
+			if (myUnion == null)
 			{
-				if (condition(opt.Value()))
-				{
-					return opt;
-				}
-
-				T def = default(T);
-				return def.AsOption();
+				return false;
 			}
 
-			return opt;
+			return myUnion.HasValue;
 		}
 
 		/// <summary>
-		/// Matches the specified type.
+		/// Matches the specified condition.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="union">The union.</param>
-		/// <param name="ignored">The ignored.</param>
+		/// <param name="condition">The condition.</param>
 		/// <returns></returns>
-		public static Option<T?> Match<T>(this IUnion union, T? ignored = default(T?))
-			where T : struct
+		public static bool Match<T>(this IUnion union, Func<T, bool> condition)
 		{
 			var myUnion = union as IUnion<T>;
-			if (myUnion != null)
+			if (myUnion == null)
 			{
-				var value = myUnion.value;
-				return value.AsOption();
+				return false;
 			}
 
-			var nullableUnion = union as IUnion<T?>;
-
-			var nullableValue = nullableUnion.value;
-			return nullableValue.AsOption();
+			return myUnion.HasValue && condition(myUnion.Value);
 		}
 
-		public static Option<T?> Match<T>(this IUnion union, Func<T, bool> condition, T? ignored = default(T?))
-			where T : struct
+		public static T Value<T>(this IUnion union)
 		{
 			var myUnion = union as IUnion<T>;
-			Option<T?> opt;
-			if (myUnion != null)
+			if (myUnion.HasValue)
 			{
-				var value = myUnion.value;
-				opt = value.AsOption();
-
-				if (opt.IsSome())
-				{
-					if (condition(opt.Value()))
-					{
-						return opt;
-					}
-
-					T? def = null;
-					return def.AsOption();
-				}
+				return myUnion.Value;
 			}
 
-			var nullableUnion = union as IUnion<T?>;
-
-			var nullableValue = nullableUnion.value;
-			opt = nullableValue.AsOption();
-
-			if (opt.IsSome())
-			{
-				if (condition(opt.Value()))
-				{
-					return opt;
-				}
-
-				T? def = null;
-				return def.AsOption();
-			}
-
-			return opt;
+			throw new System.NullReferenceException("An Attempt was made to access unset union value");
 		}
 
 		/// <summary>
@@ -147,44 +106,59 @@ namespace Functional
 
 	public interface IUnion<T>
 	{
-		T value { get; }
+		T Value { get; }
+
+		bool HasValue { get; }
 	}
 
 	public class Union<T1> : IUnion, IUnion<T1>
 	{
 		private readonly T1 a;
+		private readonly bool aHasValue;
 
 		protected Union()
 		{ }
 
 		public Union(T1 a)
 		{
-			OptionGuard(a);
 			this.a = a;
+			this.aHasValue = !IsValueNull(a);
 		}
 
-		internal T1 Item1 => a;
-
-		T1 IUnion<T1>.value
+		T1 IUnion<T1>.Value
 		{
 			get
 			{
-				return Item1;
+				//if (!this.aHasValue)
+				//{
+				//	throw
+				//}
+				return a;
 			}
 		}
 
-		protected void OptionGuard<T>(T value)
+		bool IUnion<T1>.HasValue => this.aHasValue;
+
+		protected bool IsValueNull<T>(T value)
 		{
-			if (value != null && value.GetType().Name == "Option`1")
+			var t = typeof(T);
+
+			if (Nullable.GetUnderlyingType(t) != null)
 			{
-				throw new InvalidOperationException($"Can not create an Union of Options");
+				return value == null;
 			}
+			if (t.IsValueType)
+			{
+				return false;
+			}
+			return value == null;
 		}
 	}
 
 	public class Union<T1, T2> : Union<T1>, IUnion<T2>, IUnion
 	{
 		private readonly T2 b;
+		private readonly bool bHasValue;
 
 		protected Union()
 		{ }
@@ -195,24 +169,25 @@ namespace Functional
 
 		public Union(T2 b)
 		{
-			OptionGuard(b);
 			this.b = b;
+			this.bHasValue = !IsValueNull(b);
 		}
 
-		public T2 Item2 => b;
-
-		T2 IUnion<T2>.value
+		T2 IUnion<T2>.Value
 		{
 			get
 			{
-				return Item2;
+				return this.b;
 			}
 		}
+
+		bool IUnion<T2>.HasValue => this.bHasValue;
 	}
 
 	public class Union<T1, T2, T3> : Union<T1, T2>, IUnion<T3>, IUnion
 	{
 		private readonly T3 c;
+		private readonly bool cHasValue;
 
 		protected Union()
 		{ }
@@ -227,24 +202,25 @@ namespace Functional
 
 		public Union(T3 c)
 		{
-			OptionGuard(c);
+			this.cHasValue = !IsValueNull(c);
 			this.c = c;
 		}
 
-		internal T3 Item3 => c;
-
-		T3 IUnion<T3>.value
+		T3 IUnion<T3>.Value
 		{
 			get
 			{
-				return Item3;
+				return c;
 			}
 		}
+
+		bool IUnion<T3>.HasValue => cHasValue;
 	}
 
 	public class Union<T1, T2, T3, T4> : Union<T1, T2, T3>, IUnion<T4>, IUnion
 	{
 		private readonly T4 d;
+		private readonly bool dHasValue;
 
 		protected Union()
 		{ }
@@ -263,24 +239,19 @@ namespace Functional
 
 		public Union(T4 d)
 		{
-			OptionGuard(d);
+			this.dHasValue = !IsValueNull(d);
 			this.d = d;
 		}
 
-		internal T4 Item4 => d;
+		T4 IUnion<T4>.Value => d;
 
-		T4 IUnion<T4>.value
-		{
-			get
-			{
-				return Item4;
-			}
-		}
+		bool IUnion<T4>.HasValue => dHasValue;
 	}
 
 	public class Union<T1, T2, T3, T4, T5> : Union<T1, T2, T3, T4>, IUnion<T5>, IUnion
 	{
 		private readonly T5 e;
+		private readonly bool eHasValue;
 
 		protected Union()
 		{ }
@@ -303,24 +274,19 @@ namespace Functional
 
 		public Union(T5 e)
 		{
-			OptionGuard(e);
+			this.eHasValue = !IsValueNull(e);
 			this.e = e;
 		}
 
-		private T5 Item5 => e;
+		T5 IUnion<T5>.Value => e;
 
-		public T5 value
-		{
-			get
-			{
-				return Item5;
-			}
-		}
+		bool IUnion<T5>.HasValue => eHasValue;
 	}
 
 	public class Union<T1, T2, T3, T4, T5, T6> : Union<T1, T2, T3, T4, T5>, IUnion<T6>, IUnion
 	{
 		private readonly T6 f;
+		private readonly bool fHasValue;
 
 		protected Union()
 		{ }
@@ -347,17 +313,25 @@ namespace Functional
 
 		public Union(T6 f)
 		{
-			OptionGuard(f);
+			this.fHasValue = !IsValueNull(f);
 			this.f = f;
 		}
 
 		private T6 Item6 => f;
 
-		public T6 value
+		T6 IUnion<T6>.Value
 		{
 			get
 			{
-				return Item6;
+				return f;
+			}
+		}
+
+		bool IUnion<T6>.HasValue
+		{
+			get
+			{
+				throw new NotImplementedException();
 			}
 		}
 	}
@@ -365,6 +339,7 @@ namespace Functional
 	public class Union<T1, T2, T3, T4, T5, T6, T7> : Union<T1, T2, T3, T4, T5, T6>, IUnion<T7>, IUnion
 	{
 		private readonly T7 g;
+		private readonly bool gHasValue;
 
 		protected Union()
 		{ }
@@ -395,24 +370,25 @@ namespace Functional
 
 		public Union(T7 g)
 		{
-			OptionGuard(g);
+			this.gHasValue = !IsValueNull(g);
 			this.g = g;
 		}
 
-		private T7 Item7 => g;
-
-		public T7 value
+		T7 IUnion<T7>.Value
 		{
 			get
 			{
-				return Item7;
+				return g;
 			}
 		}
+
+		bool IUnion<T7>.HasValue => gHasValue;
 	}
 
 	public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : Union<T1, T2, T3, T4, T5, T6, T7>, IUnion<T8>, IUnion
 	{
 		private readonly T8 h;
+		private readonly bool hHasValue;
 
 		protected Union()
 		{ }
@@ -443,18 +419,18 @@ namespace Functional
 
 		public Union(T8 h)
 		{
-			OptionGuard(h);
+			this.hHasValue = !IsValueNull(h);
 			this.h = h;
 		}
 
-		private T8 Item8 => h;
-
-		public T8 value
+		T8 IUnion<T8>.Value
 		{
 			get
 			{
-				return Item8;
+				return h;
 			}
 		}
+
+		bool IUnion<T8>.HasValue => hHasValue;
 	}
 }

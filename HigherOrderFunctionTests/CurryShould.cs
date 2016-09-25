@@ -22,6 +22,7 @@ namespace HigherOrderFunctionTests
 			Func<string, int, bool, bool> testFunc = TestArityThree;
 			var a3 = testFunc.Curry();
 			Assert.IsInstanceOfType(a3, typeof(Func<string, Func<int, Func<bool, bool>>>));
+			var another = a3("test");
 			Assert.IsTrue(a3("")(1)(true));
 		}
 
