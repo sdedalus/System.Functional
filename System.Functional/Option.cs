@@ -38,11 +38,21 @@ namespace Functional
 	{
 		public static bool IsSome<T>(this Option<T> value)
 		{
+			if (value == null)
+			{
+				return false;
+			}
+
 			return value.GetType() != typeof(None<T>);
 		}
 
 		public static bool IsNone<T>(this Option<T> value)
 		{
+			if (value == null)
+			{
+				return true;
+			}
+
 			return value.GetType() == typeof(None<T>);
 		}
 
