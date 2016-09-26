@@ -129,10 +129,6 @@ namespace Functional
 		{
 			get
 			{
-				//if (!this.aHasValue)
-				//{
-				//	throw
-				//}
 				return a;
 			}
 		}

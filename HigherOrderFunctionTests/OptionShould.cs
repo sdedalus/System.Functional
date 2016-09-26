@@ -13,7 +13,7 @@ namespace HigherOrderFunctionTests
 		[TestMethod]
 		public void Testone()
 		{
-			var someValue = "Test".ToMaybe();
+			var someValue = "Test".AsOption();
 			Assert.IsInstanceOfType(someValue, typeof(Some<string>));
 
 			string x = someValue;
@@ -24,20 +24,49 @@ namespace HigherOrderFunctionTests
 		[TestMethod]
 		public void TestTwo()
 		{
-			var opt = "Test".ToMaybe();
+			var opt = "Test".AsOption();
 			Assert.IsTrue(opt.IsSome());
 		}
 
 		[TestMethod]
 		public void CreateAOptOfStringWhenGivenAString()
 		{
-			var x = "test".ToMaybe();
+			var x = "test".AsOption();
 
 			Assert.IsInstanceOfType(x, typeof(Option<string>));
 
 			Assert.IsTrue(x.IsSome());
 
 			Assert.AreSame("test", (string)x);
+		}
+
+		[TestMethod]
+		public void ReturnsAnOptionOfStringWhenConditionMatches()
+		{
+			var startValue = "test".AsOption();
+
+			var x = from v in startValue where v == "test" select v;
+
+			Assert.IsInstanceOfType(x, typeof(Option<string>));
+
+			Assert.IsTrue(x.IsSome());
+
+			Assert.AreSame("test", (string)x);
+		}
+
+		[TestMethod]
+		public void ReturnsAnOptionOfStringWhenConditionDoesNotMatch()
+		{
+			string a;
+			var startValue = "test".AsOption();
+
+			var x = from v in startValue where v == "" select v;
+
+			Assert.IsInstanceOfType(x, typeof(Option<string>));
+
+			Assert.IsTrue(x.IsNone());
+
+			Throws(() => a = (string)x, typeof(InvalidCastException));
 		}
 
 		[TestMethod]
@@ -48,9 +77,9 @@ namespace HigherOrderFunctionTests
 			//var y = new List<string>();
 			string a;
 
-			Throws(() => a = from z in x select z.ToMaybe(), typeof(InvalidCastException));
+			Throws(() => a = from z in x select z, typeof(InvalidCastException));
 
-			Throws(() => a = x.Select(v => v.ToMaybe()), typeof(InvalidCastException));
+			Throws(() => a = x.Select(v => v), typeof(InvalidCastException));
 
 			//var temp = from v in x where IsSome select v;
 			//Assert.IsInstanceOfType(x, typeof(Option<string>));

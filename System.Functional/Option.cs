@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 //
 namespace Functional
@@ -8,6 +9,11 @@ namespace Functional
 		public static implicit operator T(Option<T> d)
 		{
 			return ((Some<T>)d).Value;
+		}
+
+		public static implicit operator Option<T>(T d)
+		{
+			return d.AsOption();
 		}
 	}
 
@@ -21,6 +27,7 @@ namespace Functional
 
 	public class Some<T> : Option<T>
 	{
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public T Value { get; private set; }
 
 		public Some(T value)
@@ -56,7 +63,7 @@ namespace Functional
 			return value.GetType() == typeof(None<T>);
 		}
 
-		public static Option<T> ToMaybe<T>(this T value)
+		public static Option<T> AsOption<T>(this T value)
 		{
 			return new Some<T>(value);
 		}
@@ -73,12 +80,27 @@ namespace Functional
 		{
 			return a.Bind(aval =>
 				func(aval).Bind(bval =>
-				select(aval, bval).ToMaybe()));
+				select(aval, bval).AsOption()));
 		}
 
-		public static Option<B> Select<A, B>(this Option<A> a, Func<A, Option<B>> select)
+		public static Option<B> Select<A, B>(this Option<A> a, Func<A, B> select)
 		{
-			return a.Bind(aval => select(aval));
+			return a.Bind(aval => select(aval).AsOption());
+		}
+
+		public static Option<TSource> Where<TSource>(this Option<TSource> source, Func<TSource, bool> predicate)
+		{
+			if (source.IsSome())
+			{
+				if (predicate(source))
+				{
+					return source;
+				}
+
+				return new None<TSource>();
+			}
+
+			return source;
 		}
 	}
 }
