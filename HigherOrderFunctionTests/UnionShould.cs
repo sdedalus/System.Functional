@@ -40,13 +40,41 @@ namespace HigherOrderFunctionTests
 		[TestMethod]
 		public void ForUnionStringIntWhereIntIsSetAndConditionsAreUsed()
 		{
+			var x = new Union<string, int>(1);
+
+			Assert.IsTrue(x.Match<int>(c => c == 1));
+
+			Assert.IsFalse(x.Match<string>());
+
+			Assert.IsFalse(x.Match<int>(c => c == 10));
+		}
+
+		[TestMethod]
+		public void ForUnionStringIntWhereIntIsSetAndLinqIsUsed()
+		{
+			var x = new Union<string, int>(1);
+
+			var option1 = ((IUnion<string>)x).Select(c => c);
+			var option2 = ((IUnion<int>)x).Select(c => c);
+			Assert.IsTrue(option1.IsNone());
+
+			Assert.IsTrue(((IUnion<string>)x).Where(c => c == "test").Select(c => c).IsNone());
+			Assert.IsTrue(((IUnion<int>)x).Where(c => c == 10).Select(c => c).IsNone());
+			Assert.IsTrue(((IUnion<int>)x).Where(c => c == 1).Select(c => c).IsSome());
+
+			Assert.IsFalse(option2.IsNone());
+		}
+
+		[TestMethod]
+		public void ForUnionStringNullableIntWhereIntIsSetAndConditionsAreUsed()
+		{
 			var x = new Union<string, int?>(1);
 
 			Assert.IsTrue(x.Match<int?>(c => c == 1));
 
 			Assert.IsFalse(x.Match<string>());
 
-			Assert.IsFalse(x.Match<int>(c => c == 10));
+			Assert.IsFalse(x.Match<int?>(c => c == 10));
 		}
 
 		[TestMethod]
